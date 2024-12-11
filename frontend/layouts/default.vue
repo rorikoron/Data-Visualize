@@ -22,12 +22,13 @@ const buttons = [
         onClick: () => useRouter().push('/pie')
     },
 ]
-
-const homeButton = {
-    value: "",
-    icon: "material-symbols:home-rounded",
-    onClick: () => useRouter().push('/'),
-}
+const features = [
+    {
+        value: "搜尋",
+        icon: "material-symbols:find-in-page-outline",
+        onClick: () => useRouter().push('/search')
+    }
+]
 </script>
 
 <template>
@@ -37,7 +38,10 @@ const homeButton = {
         </div>
     </header>
     <div class="grid grid-cols-[max-content_minmax(0,1fr)]">
-        <ButtonGroup :buttons="buttons" :homeButton="homeButton"/>
+        <div class="h-full bg-slate-100">
+            <ButtonGroup :buttons="buttons" legend="圖表"/>
+            <ButtonGroup :buttons="features" legend="功能"/>
+        </div>
         <slot />
     </div>
 </template>
