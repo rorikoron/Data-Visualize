@@ -45,8 +45,7 @@ function drawChart(res) {
             size: 20,
         },
     };
-    //console.log(trace1.x)
-
+    
     let data = [trace1];
 
     let layout = {
