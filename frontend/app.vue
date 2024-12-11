@@ -1,7 +1,6 @@
-<script setup>
+<script setup lang="ts">
 import { ref, provide } from 'vue';
 import * as d3 from 'd3';
-
 </script>
 
 <template>

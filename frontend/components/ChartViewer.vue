@@ -3,14 +3,11 @@ const props = defineProps({
     data: Array,
     layout: Object
 });
-
-// `props.data` が有効な場合のみ `Plotly.newPlot` を呼び出す
-watch(() => props.data, (newData) => {
-    console.log(newData);
-    if (Array.isArray(newData) && newData.length > 0) {
-        Plotly.newPlot("chart", newData, props.layout);
-    }
-}, { immediate: true });
+watch(
+    [() => props.data, () => props.layout],
+    () => {
+    Plotly.newPlot("chart", props.data, props.layout);
+})
 </script>
 
 <template>

@@ -2,10 +2,9 @@
 import { ref, onMounted } from 'vue';
 import * as d3 from 'd3';
 import ChartViewer from "../components/ChartViewer.vue"
+import { compileTemplate } from 'vue/compiler-sfc';
 
-const data_url = "https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1";
 const geo_url = "taiwan_geo.json";
-
 // エリアID
 const areaID = {
     2: "臺北市",
@@ -70,7 +69,7 @@ const calcCumlativeNum = (rows: any[], geoData: string[]) => {
     return cumlativeNum;
 };
 
-const data = ref<any>(null); // `data` を `ref` で管理
+const data = ref<any>(undefined); // `data` を `ref` で管理
 const layout = {
     paper_bgcolor: 'rgba(0, 0, 0, 0)',
     title: {
@@ -100,29 +99,33 @@ const layout = {
         l: 12
     }
 };
+
 onMounted(() => {
-    console.log("data");
-    // perform your async operation here
+    const dataStore = useDataStore();
     const fetchData = async () => {
         try {
-            console.log("loading data");
-            const [chart_data, geo_data] = await Promise.all([
-                d3.json(data_url),
-                d3.json(geo_url),
-            ]) as [any[], GeoJSON];
+            // initialize datas 
+            dataStore.updateData();
 
+
+            // initialize geo-datas
+            const [geo_data] = await Promise.all([
+                d3.json(geo_url),
+            ]) as [GeoJSON];
             const geoArr = geo_data.features.map(({ properties }) => properties.COUNTYNAME);
-            
-            data.value = [{
-                type: "choropleth",
-                locationmode: "geojson-id",
-                featureidkey: "properties.COUNTYNAME",
-                locations: Object.values(areaID),
-                geojson: geo_data,
-                z: calcCumlativeNum(unpack(chart_data, 'animal_area_pkid'), geoArr),
-                autocolorscale: true
-            }];
-            console.log(data.value);
+
+
+            watch(() => dataStore.data, () => {
+                data.value = [{
+                    type: "choropleth",
+                    locationmode: "geojson-id",
+                    featureidkey: "properties.COUNTYNAME",
+                    locations: Object.values(areaID),
+                    geojson: geo_data,
+                    z: calcCumlativeNum(unpack(dataStore.data, 'animal_area_pkid'), geoArr),
+                    autocolorscale: true
+                }];
+            })
 
         } catch (error) {
         console.error("データの取得に失敗しました:", error);
@@ -133,5 +136,5 @@ onMounted(() => {
 </script>
 
 <template>
-    <ChartViewer :data="data" :layout="layout" />
+    <ChartViewer :data="toRaw(data)" :layout="layout" />
 </template>
