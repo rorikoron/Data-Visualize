@@ -38,10 +38,10 @@ function drawChart(res) {
 
     let trace1 = {
         type: "histogram",
-        name: "父母＆小孩的資料",
-        x: unpack(animal_data,'count_opendate'),
-        autobinx: false,
-        xbins: {
+        name: "所有動物",
+        y: unpack(animal_data,'count_opendate'),
+        autobiny: false,
+        ybins: {
             size: 20,
         },
     };
@@ -51,9 +51,12 @@ function drawChart(res) {
 
     let layout = {
         margin: { t: 40 },
-        xaxis: {
+        yaxis: {
             range: [minx, maxx],
             title: "等待週數",
+        },
+        xaxis: {
+            title: "動物數量"
         },
         bargap: 0.1,
     };
