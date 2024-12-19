@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>捐款紀錄</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>捐款紀錄</h1>
+    <form id="donationForm">
+        <label>
+            姓名: <input type="text" id="name" required>
+        </label>
+        <label>
+            金額: <input type="number" id="amount" required>
+        </label>
+        <label>
+            用途:
+            <select id="purpose">
+                <option value="自由樂捐 / 助養">自由樂捐 / 助養</option>
+                <option value="生理醫療">生理醫療</option>
+                <option value="狂犬病疫苗預防針施打">狂犬病疫苗預防針施打</option>
+            </select>
+        </label>
+        <label>
+            日期: <input type="date" id="date" required>
+        </label>
+        <button type="submit">提交</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>金額</th>
+                <th>用途</th>
+                <th>日期</th>
+            </tr>
+        </thead>
+        <tbody id="recordTable">
+        </tbody>
+    </table>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html> 
