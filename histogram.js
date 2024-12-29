@@ -1,6 +1,5 @@
 url = 'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL'
 d3.json(url).then(res => {
-    console.log(res);
     drawChart(res);
 });
 
