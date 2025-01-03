@@ -1,15 +1,69 @@
-<script setup lang="ts">
-import { inject } from "vue"
+<script setup lang="js">
+import * as d3 from 'd3';
+d3.json('https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1').then(res => {
+    console.log('Fetched JSON:', res);
 
+    // Extract specific column data
+    function unpack(rows, key) {
+        return rows.map(function (row) {
+            return row[key] || 'Unknown'; // Handle missing or empty values
+        });
+    }
 
-onMounted( async () => {
+    // Use unpack to get animal_Variety data
+    let varieties = unpack(res, 'animal_Variety');
 
-    
+    // Count occurrences of each variety
+    let varietyCounts = {};
+    varieties.forEach(variety => {
+        varietyCounts[variety] = (varietyCounts[variety] || 0) + 1;
+    });
+
+    // Prepare data for the pie chart
+    let labels = Object.keys(varietyCounts);
+    let values = Object.values(varietyCounts);
+
+    let trace1 = {
+        type: "pie",
+        title: "Animal Variety Distribution",
+        labels: labels, // Labels for the chart
+        values: values, // Corresponding values
+        textinfo: 'percent+value', // Show both percentage and actual values
+        hole:.4,
+        textposition: 'inside', // Position the text inside the slices
+    };
+
+    let data = [trace1];
+
+    let layout = {
+        margin: {
+            t: 30, // Top
+            b: 20, // Bottom
+            l: 50, // Left
+            r: 50  // Right
+        },
+        text: 'Variety',
+        title: "Animal Variety Distribution"
+    };
+
+    Plotly.newPlot("myGraph", data, layout);
+}).catch(error => {
+    console.error('Error fetching JSON:', error);
 });
+
 </script>
 
 <template>
-    <div class="h-[calc(100dvh-80px)] w-full grid grid-cols-[50%_50%] gap-6 p-10 oveflow-auto">
-
-    </div>
+    <div id="myGraph"></div>
 </template>
+
+<style scoped>
+#myGraph {
+    height: 600px;
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    box-sizing: content-box;
+}
+</style>

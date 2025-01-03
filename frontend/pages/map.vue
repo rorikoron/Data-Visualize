@@ -99,23 +99,12 @@ const layout = {
         l: 12
     }
 };
-
 onMounted(() => {
     const dataStore = useDataStore();
     const fetchData = async () => {
         try {
-            // initialize datas 
-            dataStore.updateData();
-
-
-            // initialize geo-datas
-            const [geo_data] = await Promise.all([
-                d3.json(geo_url),
-            ]) as [GeoJSON];
-            const geoArr = geo_data.features.map(({ properties }) => properties.COUNTYNAME);
-
-
-            watch(() => dataStore.data, () => {
+            
+            const updateData = () => {
                 data.value = [{
                     type: "choropleth",
                     locationmode: "geojson-id",
@@ -125,10 +114,20 @@ onMounted(() => {
                     z: calcCumlativeNum(unpack(dataStore.data, 'animal_area_pkid'), geoArr),
                     autocolorscale: true
                 }];
-            })
+            }
+            // initialize geo-datas
+            const geo_data = await d3.json(geo_url) as GeoJSON;
+            const geoArr = geo_data.features.map(({ properties }) => properties.COUNTYNAME);
+
+            // first time check
+            updateData();
+            // if changed, update again
+            watch(() => dataStore.data, () => {
+                updateData();
+            }, { deep: true })
 
         } catch (error) {
-        console.error("データの取得に失敗しました:", error);
+            console.error("データの取得に失敗しました:", error);
         }
     };
     fetchData();
@@ -136,5 +135,20 @@ onMounted(() => {
 </script>
 
 <template>
-    <ChartViewer :data="toRaw(data)" :layout="layout" />
+    <div>
+        <ChartViewer :data="toRaw(data)" :layout="layout" />
+    </div>
 </template>
+
+
+
+<style scoped>
+#myGraph {
+    height: 600px;
+    width: 100%;
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-sizing: content-box;
+}
+</style>
