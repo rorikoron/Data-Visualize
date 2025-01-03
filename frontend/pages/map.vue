@@ -101,6 +101,7 @@ const layout = {
 };
 onMounted(() => {
     const dataStore = useDataStore();
+    dataStore.updateData()
     const fetchData = async () => {
         try {
             

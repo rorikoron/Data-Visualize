@@ -15,7 +15,7 @@ const city = [
     },{
         value: "養殖場數量",
         icon: "material-symbols:bar-chart",
-        onClick: () => useRouter().push('/bar')
+        onClick: () => useRouter().push('/breeding')
     },{
         value: "收容所貓狗數量",
         icon: "tdesign:chart-bubble",
