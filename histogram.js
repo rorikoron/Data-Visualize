@@ -36,19 +36,28 @@ function drawChart(res) {
     maxx = Math.ceil(Math.max(...animal_data.map(item => item.count_opendate))/20)*20+20;    
 
     let trace1 = {
-        type: "histogram",
-        name: "所有動物",
-        y: unpack(animal_data,'count_opendate'),
-        autobiny: false,
+        type: "histogram",name:"狗",
+        y: unpack(animal_data.filter(item => item.animal_kind ==="狗"),'count_opendate'),
+        autobinx: false,
         ybins: {
             size: 20,
         },
+        opacity: 0.8
+    };
+    let trace2 = {
+        type: "histogram",name:"貓",
+        y: unpack(animal_data.filter(item => item.animal_kind ==="貓"),'count_opendate'),
+        autobinx: false,
+        ybins: {
+            size: 20,
+        },
+        opacity: 0.8
     };
     
-    let data = [trace1];
+    let data = [trace1, trace2];
 
     let layout = {
-        margin: { t: 40 },
+        margin: { t: 40 }, barmode: "stack",
         yaxis: {
             range: [minx, maxx],
             title: "等待週數",
